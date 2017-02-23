@@ -4,6 +4,7 @@ if(!out.exists()){
     out.mkdir()
 }
 
+def list = new ArrayList()
 def dir = new File('E:/tmp/move-file-to-top')
 dir.eachFileRecurse { File file ->
     if (file.isDirectory()) {
@@ -15,8 +16,14 @@ dir.eachFileRecurse { File file ->
         return
     }
 
+    list.add(file)
+}
+
+// 拿出eachFileRecurse{}的block，是为了连out目录中的文件也move一次
+list.forEach{ File file ->
     def srcPath = file.path
     def dstPath = "${out.path}\\${file.name}"
-    new AntBuilder().copy(file: srcPath, tofile: dstPath)
-
+    new AntBuilder().sequential {
+        move(file: srcPath, tofile: dstPath)
+    }
 }
