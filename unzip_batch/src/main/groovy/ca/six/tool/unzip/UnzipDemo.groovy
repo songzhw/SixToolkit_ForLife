@@ -1,15 +1,26 @@
 package ca.six.tool.unzip
 
-def unzip(File src){
+def unzip(File src) {
     src.eachDir { dict ->
+        // def dictName = dict.getAbsolutePath()
         dict.eachFileRecurse { file ->
-            def name = file.name
-            if(!name.endsWith("7z") && !name.endsWith("zip")) {
+            if (file.isDirectory()) {
                 return
             }
-            println("\t$dict -- ${file}")
+
+            def name = file.name
+            if (!name.endsWith("7z") && !name.endsWith("zip")) {
+                return
+            }
+
+            unzipTo(file, dict)
         }
     }
+}
+
+def unzipTo(File zip, File dest) {
+    println "\t ${zip.getAbsolutePath()}  || ${dest.getAbsolutePath()}"
+    Runtime.getRuntime().exec("7z x ${zip.getAbsolutePath()} -o${dest.getAbsolutePath()}")
 }
 
 unzip(new File("E:\\temp"))
