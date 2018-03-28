@@ -6,7 +6,7 @@ def runCmd() {
 
     Runtime.getRuntime().exec("explorer E:\\temp")
 
-    getResultFromCmd("7z x E:\\temp\\tmp.7z -oE:\\temp")
+    Runtime.getRuntime().exec("7z x E:\\temp\\tmp.7z -oE:\\temp")
 }
 
 def getResultFromCmd(cmd){
