@@ -2,7 +2,10 @@ package ca.six.tool.unzip
 
 def unzip(File src){
     src.eachDirRecurse { dict ->
-        println(dict)
+        dict.eachFileMatch(~/.*[7z|zip]/) { file ->
+            println("\t$file")
+        }
+
     }
 }
 
