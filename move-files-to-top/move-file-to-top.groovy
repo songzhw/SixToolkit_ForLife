@@ -1,4 +1,6 @@
 
+//TODO 用时, 要修改out与dir两个目录!
+
 def out = new File('E:/tmp/move-file-to-top/out')
 if(!out.exists()){
     out.mkdir()
