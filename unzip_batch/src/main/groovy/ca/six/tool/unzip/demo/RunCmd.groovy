@@ -9,18 +9,4 @@ def runCmd() {
     Runtime.getRuntime().exec("7z x E:\\temp\\tmp.7z -oE:\\temp")
 }
 
-def getResultFromCmd(cmd){
-    def process = Runtime.getRuntime().exec(cmd)
-    InputStream input = process.getInputStream();
-    BufferedReader reader = new BufferedReader(new InputStreamReader(input));
-    String szline;
-    while (szline = reader.readLine()!= null) {
-        System.out.println(szline);
-    }
-    reader.close();
-    process.waitFor();
-    process.destroy();
-}
-
-
 runCmd()
