@@ -23,11 +23,5 @@ def unzipTo(File zip, File dest) {
     Runtime.getRuntime().exec("7z x \"${zip.getAbsolutePath()}\" -o\"${dest.getAbsolutePath()}\"")
 }
 
-unzip(new File("F:\\axDown\\test"))
-
-/*
-    src.eachDir { dict ->
-        println(dict)
-    }
-只会打出第一级的子目录, 不会打出孙目录, 重孙目录, ...
- */
+//TODO 入口在这. 修改srcFile的路径即可运行此脚本 
+unzip(new File("F:\\a\\tmp"))
