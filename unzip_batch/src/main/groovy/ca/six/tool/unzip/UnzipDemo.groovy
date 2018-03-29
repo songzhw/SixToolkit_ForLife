@@ -20,7 +20,7 @@ def unzip(File src) {
 
 def unzipTo(File zip, File dest) {
     println "\t ${zip.getAbsolutePath()}  || ${dest.getAbsolutePath()}"
-    Runtime.getRuntime().exec("7z x ${zip.getAbsolutePath()} -o${dest.getAbsolutePath()}")
+    Runtime.getRuntime().exec("7z x \"${zip.getAbsolutePath()}\" -o${dest.getAbsolutePath()}")
 }
 
 unzip(new File("E:\\temp"))
