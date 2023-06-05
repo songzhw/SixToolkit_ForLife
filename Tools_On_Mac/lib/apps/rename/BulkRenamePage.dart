@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../Commons.dart';
 
@@ -21,8 +22,8 @@ class BulkRenamePage extends StatelessWidget {
 
   f() async {
     print('11');
-    final dir = Directory("~/Downloads");
-    print('dir = ${dir.listSync()}');
+    final dir = await getApplicationDocumentsDirectory();
+    print('dir = ${dir.path}'); //=> dir = /Users/zhengwangsong/Documents
   }
 }
 
@@ -43,5 +44,7 @@ import 'package:filepicker_macos/filepicker_macos.dart';
 	<false/>
 这个sandbox的值不能为true !!!
 
-
+4. 当把app-sandbox设为false后, 那下面的值就变了!!!
+    final dir = await getApplicationDocumentsDirectory();
+    print('dir = ${dir.path}'); //=> dir = /Users/zhengwangsong/Documents
  */
