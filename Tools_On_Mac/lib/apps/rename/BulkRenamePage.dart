@@ -23,7 +23,7 @@ class BulkRenamePage extends StatelessWidget {
   f() async {
     print('11');
     final dir = await getApplicationDocumentsDirectory();
-    print('dir = ${dir.path}'); //=> dir = /Users/zhengwangsong/Documents
+    print('dir = ${dir.listSync()}'); //=> dir = /Users/zhengwangsong/Documents
   }
 }
 
