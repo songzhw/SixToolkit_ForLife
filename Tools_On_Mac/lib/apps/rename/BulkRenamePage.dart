@@ -1,7 +1,10 @@
-import 'package:filepicker_macos/filepicker_macos.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import '../../Commons.dart';
+
+
 
 class BulkRenamePage extends StatelessWidget {
   @override
@@ -18,13 +21,8 @@ class BulkRenamePage extends StatelessWidget {
 
   f() async {
     print('11');
-    final ss = await FilepickerMacos.pick(
-        canChooseFiles: true,
-        allowsMultipleSelection: true,
-        directoryURL: "~/Downloads",
-        prompt: "hello"
-    );
-    print('ss = ${ss}');
+    final dir = Directory("~/Downloads");
+    print('dir = ${dir.listSync()}');
   }
 }
 
@@ -35,4 +33,15 @@ print('dir = ${dir.path}'); //=> /Users/szw/Library/Containers/ca.six.tools.mac.
 
 final dir = await getDownloadsDirectory();
 print('dir = ${dir?.path}'); //=> /Users/szw/Library/Containers/ca.six.tools.mac.toolsOnMac/Data/Downloads
+
+2.
+//只能pick文件, 没有我想像的列出文件列表之类的操作, 故删除了些库
+import 'package:filepicker_macos/filepicker_macos.dart';
+
+3. 要能访问mac本地文件, 就得去 macos/Runner/DebugProfile.entitlements 文件中修改
+	<key>com.apple.security.app-sandbox</key>
+	<false/>
+这个sandbox的值不能为true !!!
+
+
  */
