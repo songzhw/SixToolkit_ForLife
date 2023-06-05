@@ -73,6 +73,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.1.4"
+  filepicker_macos:
+    dependency: "direct main"
+    description:
+      name: filepicker_macos
+      sha256: "151c29eac9f2807650df20c2592d1ae7ee97ede999219aa40278263ad69ef5c1"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.6"
   flutter:
     dependency: "direct main"
     description: flutter
