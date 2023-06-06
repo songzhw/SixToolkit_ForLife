@@ -7,6 +7,7 @@ import '../../Commons.dart';
 
 class BulkRenamePage extends StatelessWidget {
   final input = TextEditingController();
+  final scroll = ScrollController();
   final files = <FileSystemEntity>[].obs;
 
   @override
@@ -25,14 +26,17 @@ class BulkRenamePage extends StatelessWidget {
             },
           ),
           Container( height: 200,
-            child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2, // 一行几个. 这当然就确定了width了
-              childAspectRatio: 10,
-              mainAxisSpacing: 10,  //主轴上的空隙
-              crossAxisSpacing: 10, //次轴上的空隙
-            ), itemBuilder: (ctx, index) {
-              return Text("aaa");
-            }, itemCount: 20, scrollDirection: Axis.vertical, physics: ScrollPhysics()),
+            child: Scrollbar(
+              controller: scroll,
+              child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, // 一行几个. 这当然就确定了width了
+                childAspectRatio: 10,
+                mainAxisSpacing: 10,  //主轴上的空隙
+                crossAxisSpacing: 10, //次轴上的空隙
+              ), itemBuilder: (ctx, index) {
+                return Text("aaa");
+              }, itemCount: 20, controller: scroll,),
+            ),
           ),
           TextButton(onPressed: f, child: Text("ccc")),
         ],
@@ -77,4 +81,13 @@ import 'package:filepicker_macos/filepicker_macos.dart';
 5. Grid放到Column里会报错, 因为不知道GridView尺寸
 这时要么给GridView(shrinkWrap: true)
 要么就是Flexible(flex:1, child: Grid)
+要么就是Container(height: 200, child: Grid)
+
+6. Grid放到Column中, 当grid.height不高, 明显有东西没展示时, 其实默认不会滑动的
+要想能滑动看到更多内容, 就得用ScrollBar包一下, 并把scrollController放到grid与scrollbar里去:
+           Scrollbar(
+              controller: scroll,
+              child: GridView.builder(...,
+                        controller: scroll,),
+注意, 父子两个地方都加这个controller哦!
  */
