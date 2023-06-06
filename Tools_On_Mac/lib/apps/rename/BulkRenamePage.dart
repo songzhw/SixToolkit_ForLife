@@ -1,30 +1,44 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:get/get.dart';
 
 import '../../Commons.dart';
 
-
-
 class BulkRenamePage extends StatelessWidget {
+  final input = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
+    input.text = "/Users/zhengwangsong/Downloads"; //初始值, 便于debug
+
     return Scaffold(
       appBar: appbar("Bulk Re-name"),
       body: Column(
         children: [
+          TextField(
+            controller: input,
+            decoration: InputDecoration(labelText: "folder path", hintText: "folder path", prefixIcon: Icon(Icons.folder_copy_outlined)),
+            onSubmitted: (value) {
+              print('szw value = $value');
+            },
+          ),
           TextButton(onPressed: f, child: Text("ccc")),
         ],
       ),
     );
   }
 
+  _readFilesInDir(String path){
+    Directory dir = Directory(path);
+    List<FileSystemEntity> files = dir.listSync();
+    for(var file in files) {
+      print("szw file = ${file.path}, isDir = ${file is Directory}");
+    }
+  }
+
   f() async {
-    print('11');
-    final dir = Directory("/Users/zhengwangsong/Downloads");
-    print('di = ${dir.path}');
-    print('dir = ${dir.listSync()}'); //=> dir = /Users/zhengwangsong/Documents
+    _readFilesInDir(input.text);
   }
 }
 
@@ -47,5 +61,5 @@ import 'package:filepicker_macos/filepicker_macos.dart';
 
 4. 当把app-sandbox设为false后, 那下面的值就变了!!!
     final dir = await getApplicationDocumentsDirectory();
-    print('dir = ${dir.path}'); //=> dir = /Users/zhengwangsong/Documents
+    print('dir = ${dir.path}'); //=> dir = /Users/szw/Documents
  */
