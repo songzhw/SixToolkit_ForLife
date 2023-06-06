@@ -29,8 +29,7 @@ class BulkRenamePage extends StatelessWidget {
             height: 200,
             child: Scrollbar(
               controller: scroll,
-              child: Obx(() => GridView.builder(
-                  gridDelegate: fileGridDelegate,
+              child: Obx(() => ListView.builder(
                   itemCount: files.value.length,
                   controller: scroll,
                   itemBuilder: (ctx, index) => _renderFileGrid(index))),
@@ -51,7 +50,18 @@ class BulkRenamePage extends StatelessWidget {
   _renderFileGrid(int index) {
     final _files = files.value;
     if(index >= _files.length) return Text("");
-    return Text(_files[index].path);
+    return Container(
+      color: index % 2 == 0 ? Colors.grey : Colors.green,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Expanded(flex:1, child: Text(_files[index].getName(), style: fileStyle)),
+            Expanded(flex:1, child: Text(_files[index].getName(), style: fileStyle)),
+          ],
+        ),
+      ),
+    );
   }
 
   f() async {
@@ -60,12 +70,8 @@ class BulkRenamePage extends StatelessWidget {
 
   // - - - - - - - - - trivial members - - - - - - - - -
   final hint = "folder path";
-  final fileGridDelegate = const SliverGridDelegateWithFixedCrossAxisCount(
-    crossAxisCount: 2, // 一行几个. 这当然就确定了width了
-    childAspectRatio: 10,
-    mainAxisSpacing: 10, //主轴上的空隙
-    crossAxisSpacing: 10, //次轴上的空隙
-  );
+  final fileStyle = TextStyle(fontSize: 20, color: Colors.black);
+  final nextStyle = TextStyle(fontSize: 20, color: Colors.blue);
 
 }
 
