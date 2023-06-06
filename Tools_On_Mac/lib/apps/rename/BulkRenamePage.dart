@@ -7,6 +7,7 @@ import '../../Commons.dart';
 
 class BulkRenamePage extends StatelessWidget {
   final input = TextEditingController();
+  final files = <FileSystemEntity>[].obs;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,16 @@ class BulkRenamePage extends StatelessWidget {
             onSubmitted: (value) {
               print('szw value = $value');
             },
+          ),
+          Container( height: 200,
+            child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // 一行几个. 这当然就确定了width了
+              childAspectRatio: 10,
+              mainAxisSpacing: 10,  //主轴上的空隙
+              crossAxisSpacing: 10, //次轴上的空隙
+            ), itemBuilder: (ctx, index) {
+              return Text("aaa");
+            }, itemCount: 20, scrollDirection: Axis.vertical, physics: ScrollPhysics()),
           ),
           TextButton(onPressed: f, child: Text("ccc")),
         ],
@@ -62,4 +73,8 @@ import 'package:filepicker_macos/filepicker_macos.dart';
 4. 当把app-sandbox设为false后, 那下面的值就变了!!!
     final dir = await getApplicationDocumentsDirectory();
     print('dir = ${dir.path}'); //=> dir = /Users/szw/Documents
+
+5. Grid放到Column里会报错, 因为不知道GridView尺寸
+这时要么给GridView(shrinkWrap: true)
+要么就是Flexible(flex:1, child: Grid)
  */
