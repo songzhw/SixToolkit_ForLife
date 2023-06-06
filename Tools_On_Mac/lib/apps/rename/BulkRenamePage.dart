@@ -2,12 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:tools_on_mac/ext/FileSystemEntityExt.dart';
 
 import '../../Commons.dart';
 
 class BulkRenamePage extends StatelessWidget {
   final input = TextEditingController();
   final scroll = ScrollController();
+
   final files = <FileSystemEntity>[].obs;
 
   @override
@@ -20,22 +22,18 @@ class BulkRenamePage extends StatelessWidget {
         children: [
           TextField(
             controller: input,
-            decoration: InputDecoration(labelText: "folder path", hintText: "folder path", prefixIcon: Icon(Icons.folder_copy_outlined)),
-            onSubmitted: (value) {
-              print('szw value = $value');
-            },
+            decoration: InputDecoration(labelText: hint, hintText: hint, prefixIcon: Icon(Icons.folder_copy_outlined)),
+            onSubmitted: (value) => _readFilesInDir(value),
           ),
-          Container( height: 200,
+          SizedBox(
+            height: 200,
             child: Scrollbar(
               controller: scroll,
-              child: GridView.builder(gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2, // 一行几个. 这当然就确定了width了
-                childAspectRatio: 10,
-                mainAxisSpacing: 10,  //主轴上的空隙
-                crossAxisSpacing: 10, //次轴上的空隙
-              ), itemBuilder: (ctx, index) {
-                return Text("aaa");
-              }, itemCount: 20, controller: scroll,),
+              child: Obx(() => GridView.builder(
+                  gridDelegate: fileGridDelegate,
+                  itemCount: files.value.length,
+                  controller: scroll,
+                  itemBuilder: (ctx, index) => _renderFileGrid(index))),
             ),
           ),
           TextButton(onPressed: f, child: Text("ccc")),
@@ -44,17 +42,31 @@ class BulkRenamePage extends StatelessWidget {
     );
   }
 
-  _readFilesInDir(String path){
+  _readFilesInDir(String path) {
     Directory dir = Directory(path);
-    List<FileSystemEntity> files = dir.listSync();
-    for(var file in files) {
-      print("szw file = ${file.path}, isDir = ${file is Directory}");
-    }
+    List<FileSystemEntity> filesInDir = dir.listSync(); //还会有".DS_Store", ".localized"的目录, 要去除它们
+    files.value = filesInDir.where((file) => file.isVisibleFile()).toList();
+  }
+
+  _renderFileGrid(int index) {
+    final _files = files.value;
+    if(index >= _files.length) return Text("");
+    return Text(_files[index].path);
   }
 
   f() async {
     _readFilesInDir(input.text);
   }
+
+  // - - - - - - - - - trivial members - - - - - - - - -
+  final hint = "folder path";
+  final fileGridDelegate = const SliverGridDelegateWithFixedCrossAxisCount(
+    crossAxisCount: 2, // 一行几个. 这当然就确定了width了
+    childAspectRatio: 10,
+    mainAxisSpacing: 10, //主轴上的空隙
+    crossAxisSpacing: 10, //次轴上的空隙
+  );
+
 }
 
 /*
