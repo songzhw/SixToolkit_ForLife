@@ -44,19 +44,28 @@ class BulkRenamePage extends StatelessWidget {
   _readFilesInDir(String path) {
     Directory dir = Directory(path);
     List<FileSystemEntity> filesInDir = dir.listSync(); //还会有".DS_Store", ".localized"的目录, 要去除它们
-    files.value = filesInDir.where((file) => file.isVisibleFile()).toList();
+    // 排序 (folder在前, file在后)
+    files.value = filesInDir.where((file) => file.isVisibleFile()).toList()
+      ..sort((a,b) => a.compareFileAndFolder(b));
   }
 
   _renderFileGrid(int index) {
     final _files = files.value;
     if(index >= _files.length) return Text("");
+    final file = _files[index];
+    final icon = (file is Directory) ? const Icon(Icons.folder, color: Colors.orange,) : const Icon(Icons.file_copy, color: Colors.white);
     return Container(
       color: index % 2 == 0 ? Colors.grey : Colors.green,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            Expanded(flex:1, child: Text(_files[index].getName(), style: fileStyle)),
+            Expanded(flex:1, child: Row(
+              children: [
+                icon, SizedBox(width: 10),
+                Text(_files[index].getName(), style: fileStyle),
+              ],
+            )),
             Expanded(flex:1, child: Text(_files[index].getName(), style: fileStyle)),
           ],
         ),
