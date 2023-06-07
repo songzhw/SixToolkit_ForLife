@@ -13,18 +13,20 @@ class BulkRenamePage extends StatelessWidget {
 
   final inReplace = TextEditingController();
   final inWith = TextEditingController();
+  final with_ = "".obs;
 
-  final files = <FileSystemEntity>[].obs;
+  final files_ = <FileSystemEntity>[].obs;
 
   @override
   Widget build(BuildContext context) {
-    input.text = "/Users/zhengwangsong/Documents/书籍"; //初始值, 便于debug
+    input.text = "/Users/zhengwangsong/Documents/书籍/x"; //初始值, 便于debug
 
     return Scaffold(
       appBar: appbar("Bulk Re-name"),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             TextField(
               controller: input,
@@ -37,7 +39,7 @@ class BulkRenamePage extends StatelessWidget {
               child: Scrollbar(
                 controller: scroll,
                 child: Obx(() => ListView.builder(
-                    itemCount: files.value.length,
+                    itemCount: files_.value.length,
                     controller: scroll,
                     itemBuilder: (ctx, index) => _renderFileGrid(index))),
               ),
@@ -47,12 +49,19 @@ class BulkRenamePage extends StatelessWidget {
               Text("Replace", style: titleStyle),
               Expanded(child: TextField(controller: inReplace), flex: 1),
               Text("with"),
-              Expanded(child: TextField(controller: inWith), flex: 1),
+              Expanded(child: TextField(controller: inWith, onChanged: (v) {with_.value = v;}), flex: 1),
             ]),
+
+            OutlinedButton(onPressed: _renameAll, child: Text("rename")),
           ],
         ),
       ),
     );
+  }
+
+  _renameAll(){
+    final replaceTo = inWith.text;
+    final replaceFrom = inReplace.text;
   }
 
   _readFilesInDir(String path) {
@@ -64,27 +73,29 @@ class BulkRenamePage extends StatelessWidget {
     //   ..sort((a,b) => a.compareFileAndFolder(b)); //sort()返回void, 所以要用"..", 而不是"."
 
     // 1). 只取可见文件;  2). 不取目录, 只取文件
-    files.value = filesInDir.where((file) => file.isVisibleFile() && file is! Directory).toList();
+    files_.value = filesInDir.where((file) => file.isVisibleFile() && file is! Directory).toList();
   }
 
   _renderFileGrid(int index) {
-    final _files = files.value;
+    final _files = files_.value;
     if(index >= _files.length) return Text("");
     final file = _files[index];
     final icon = (file is Directory) ? const Icon(Icons.folder, color: Colors.orange,) : const Icon(Icons.file_copy, color: Colors.white);
+    final originalName = file.getName();
     return Container(
       color: index % 2 == 0 ? Colors.grey : Colors.green,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            Expanded(flex:1, child: Row(
+            Expanded(flex:3, child: Row(
               children: [
                 icon, const SizedBox(width: 10),
-                Expanded(child: Text(_files[index].getName(), style: fileStyle)),
+                Expanded(child: Text(originalName, style: fileStyle)),
               ],
             )),
-            Expanded(flex:1, child: Text(_files[index].getName(), style: fileStyle)),
+            Expanded(flex:5, child:
+              Obx(()=> Text(originalName.replaceAll(inReplace.text, with_.value), style: fileStyle))),
           ],
         ),
       ),
