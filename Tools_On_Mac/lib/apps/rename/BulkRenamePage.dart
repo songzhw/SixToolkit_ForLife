@@ -62,6 +62,10 @@ class BulkRenamePage extends StatelessWidget {
   _renameAll(){
     final replaceTo = inWith.text;
     final replaceFrom = inReplace.text;
+    for(final file in files_.value) {
+      final newName = file.getName().replaceAll(replaceFrom, replaceTo);
+      file.renameSyncTo(newName);
+    }
   }
 
   _readFilesInDir(String path) {
