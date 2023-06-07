@@ -66,6 +66,9 @@ class BulkRenamePage extends StatelessWidget {
       final newName = file.getName().replaceAll(replaceFrom, replaceTo);
       file.renameSyncTo(newName);
     }
+
+    // 重新读取目录中所有文件, 以反应结果
+    _readFilesInDir(input.text);
   }
 
   _readFilesInDir(String path) {
