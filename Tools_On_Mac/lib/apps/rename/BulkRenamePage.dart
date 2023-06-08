@@ -3,23 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
+import 'package:tools_on_mac/apps/rename/BulkRenameCtrl.dart';
 import 'package:tools_on_mac/ext/FileSystemEntityExt.dart';
 
 import '../../Commons.dart';
 
 class BulkRenamePage extends StatelessWidget {
-  final input = TextEditingController();
-  final scroll = ScrollController();
-
-  final inReplace = TextEditingController();
-  final inWith = TextEditingController();
-  final with_ = "".obs;
-
-  final files_ = <FileSystemEntity>[].obs;
 
   @override
   Widget build(BuildContext context) {
-    input.text = "/Users/zhengwangsong/tmp/xxx"; //初始值, 便于debug
+    final ctrl = Get.put(BulkRenameCtrl());
 
     return Scaffold(
       appBar: appbar("Bulk Re-name"),
@@ -29,63 +22,45 @@ class BulkRenamePage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             TextField(
-              controller: input,
-              decoration: InputDecoration(labelText: hint, hintText: hint, prefixIcon: Icon(Icons.folder_copy_outlined)),
-              onSubmitted: (value) => _readFilesInDir(value),
+              controller: ctrl.input,
+              decoration: InputDecoration(labelText: hint, hintText: hint, prefixIcon: const Icon(Icons.folder_copy_outlined)),
+              onSubmitted: (value) => ctrl.readFilesInDir(value),
             ),
 
             SizedBox(
               height: 300,
               child: Scrollbar(
-                controller: scroll,
+                controller: ctrl.scroll,
                 child: Obx(() => ListView.builder(
-                    itemCount: files_.value.length,
-                    controller: scroll,
+                    itemCount: ctrl.files_.value.length,
+                    controller: ctrl.scroll,
                     itemBuilder: (ctx, index) => _renderFileGrid(index))),
               ),
             ),
 
             Row(children: [
               Text("Replace", style: titleStyle),
-              Expanded(child: TextField(controller: inReplace), flex: 1),
-              Text("with"),
-              Expanded(child: TextField(controller: inWith, onChanged: (v) {with_.value = v;}), flex: 1),
+              const SizedBox(width: 10),
+              Expanded(flex: 1, child: TextField(controller: ctrl.inReplace)),
+              const SizedBox(width: 10),
+              const Text("with"),
+              const SizedBox(width: 10),
+              Expanded(flex: 1, child: TextField(controller: ctrl.inWith, onChanged: (v) {ctrl.with_.value = v;})),
             ]),
 
-            OutlinedButton(onPressed: _renameAll, child: Text("rename")),
+            OutlinedButton(onPressed: ctrl.renameAll, child: const Text("rename")),
           ],
         ),
       ),
     );
   }
 
-  _renameAll(){
-    final replaceTo = inWith.text;
-    final replaceFrom = inReplace.text;
-    for(final file in files_.value) {
-      final newName = file.getName().replaceAll(replaceFrom, replaceTo);
-      file.renameSyncTo(newName);
-    }
 
-    // 重新读取目录中所有文件, 以反应结果
-    _readFilesInDir(input.text);
-  }
-
-  _readFilesInDir(String path) {
-    Directory dir = Directory(path);
-    List<FileSystemEntity> filesInDir = dir.listSync(); //还会有".DS_Store", ".localized"的目录, 要去除它们
-
-    // 1). 只取可见文件;  2). 排序 (folder在前, file在后)
-    // files.value = filesInDir.where((file) => file.isVisibleFile()).toList()
-    //   ..sort((a,b) => a.compareFileAndFolder(b)); //sort()返回void, 所以要用"..", 而不是"."
-
-    // 1). 只取可见文件;  2). 不取目录, 只取文件
-    files_.value = filesInDir.where((file) => file.isVisibleFile() && file is! Directory).toList();
-  }
 
   _renderFileGrid(int index) {
-    final _files = files_.value;
-    if(index >= _files.length) return Text("");
+    final ctrl = Get.find<BulkRenameCtrl>();
+    final _files = ctrl.files_.value;
+    if(index >= _files.length) return const Text("");
     final file = _files[index];
     final icon = (file is Directory) ? const Icon(Icons.folder, color: Colors.orange,) : const Icon(Icons.file_copy, color: Colors.indigo);
     final originalName = file.getName();
@@ -104,7 +79,7 @@ class BulkRenamePage extends StatelessWidget {
             )),
             Expanded(flex:5, child:
               Obx(() {
-                final newName = originalName.replaceAll(inReplace.text, with_.value);
+                final newName = originalName.replaceAll(ctrl.inReplace.text, ctrl.with_.value);
                 final style = originalName == newName ? fileStyle : nextStyle;
                 return Text(newName, style: style);
               })),
@@ -116,9 +91,9 @@ class BulkRenamePage extends StatelessWidget {
 
   // - - - - - - - - - trivial members - - - - - - - - -
   final hint = "folder path";
-  final fileStyle = TextStyle(fontSize: 18, color: Colors.black);
-  final nextStyle = TextStyle(fontSize: 18, color: Colors.blueAccent);
-  final titleStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
+  final fileStyle = const TextStyle(fontSize: 18, color: Colors.black);
+  final nextStyle = const TextStyle(fontSize: 18, color: Colors.blueAccent);
+  final titleStyle = const TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
 
 }
 
