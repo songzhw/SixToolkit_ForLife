@@ -19,7 +19,7 @@ class BulkRenamePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    input.text = "/Users/zhengwangsong/Documents/书籍/x"; //初始值, 便于debug
+    input.text = "/Users/zhengwangsong/tmp/xxx"; //初始值, 便于debug
 
     return Scaffold(
       appBar: appbar("Bulk Re-name"),
@@ -89,6 +89,8 @@ class BulkRenamePage extends StatelessWidget {
     final file = _files[index];
     final icon = (file is Directory) ? const Icon(Icons.folder, color: Colors.orange,) : const Icon(Icons.file_copy, color: Colors.white);
     final originalName = file.getName();
+    final newName = originalName.replaceAll(inReplace.text, with_.value);
+    final style = originalName == newName ? fileStyle : nextStyle;
     return Container(
       color: index % 2 == 0 ? Colors.grey : Colors.green,
       child: Padding(
@@ -102,7 +104,7 @@ class BulkRenamePage extends StatelessWidget {
               ],
             )),
             Expanded(flex:5, child:
-              Obx(()=> Text(originalName.replaceAll(inReplace.text, with_.value), style: fileStyle))),
+              Obx(()=> Text(newName, style: style))),
           ],
         ),
       ),
