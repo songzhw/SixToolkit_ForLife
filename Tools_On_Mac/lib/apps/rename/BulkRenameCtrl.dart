@@ -11,6 +11,7 @@ class BulkRenameCtrl extends GetxController {
   final inReplace = TextEditingController();
   final inWith = TextEditingController();
   final with_ = "".obs;
+  final replace_ = "".obs;
 
   final files_ = <FileSystemEntity>[].obs;
 
@@ -43,4 +44,13 @@ class BulkRenameCtrl extends GetxController {
     // 1). 只取可见文件;  2). 不取目录, 只取文件
     files_.value = filesInDir.where((file) => file.isVisibleFile() && file is! Directory).toList();
   }
+
+  updateReplaceString(String v) {
+    replace_.value = v;
+  }
+
+  updateWithString(String v) {
+    with_.value = v;
+  }
+
 }

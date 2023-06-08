@@ -41,11 +41,12 @@ class BulkRenamePage extends StatelessWidget {
             Row(children: [
               Text("Replace", style: titleStyle),
               const SizedBox(width: 10),
-              Expanded(flex: 1, child: TextField(controller: ctrl.inReplace)),
+              // 有时replace与with全有了内容; 但要想修改下replace, 希望也能刷新列表, 所以这里也得加上onChanged
+              Expanded(flex: 1, child: TextField(controller: ctrl.inReplace, onChanged: ctrl.updateReplaceString)),
               const SizedBox(width: 10),
               const Text("with"),
               const SizedBox(width: 10),
-              Expanded(flex: 1, child: TextField(controller: ctrl.inWith, onChanged: (v) {ctrl.with_.value = v;})),
+              Expanded(flex: 1, child: TextField(controller: ctrl.inWith, onChanged: ctrl.updateWithString)),
             ]),
 
             OutlinedButton(onPressed: ctrl.renameAll, child: const Text("rename")),
@@ -54,6 +55,7 @@ class BulkRenamePage extends StatelessWidget {
       ),
     );
   }
+
 
 
 
@@ -79,7 +81,8 @@ class BulkRenamePage extends StatelessWidget {
             )),
             Expanded(flex:5, child:
               Obx(() {
-                final newName = originalName.replaceAll(ctrl.inReplace.text, ctrl.with_.value);
+                final isNotFullDone = ctrl.replace_.value.isEmpty || ctrl.with_.value.isEmpty;
+                final newName = isNotFullDone ? originalName : originalName.replaceAll(ctrl.replace_.value, ctrl.with_.value);
                 final style = originalName == newName ? fileStyle : nextStyle;
                 return Text(newName, style: style);
               })),
