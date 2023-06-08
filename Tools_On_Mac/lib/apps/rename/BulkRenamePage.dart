@@ -87,12 +87,11 @@ class BulkRenamePage extends StatelessWidget {
     final _files = files_.value;
     if(index >= _files.length) return Text("");
     final file = _files[index];
-    final icon = (file is Directory) ? const Icon(Icons.folder, color: Colors.orange,) : const Icon(Icons.file_copy, color: Colors.white);
+    final icon = (file is Directory) ? const Icon(Icons.folder, color: Colors.orange,) : const Icon(Icons.file_copy, color: Colors.indigo);
     final originalName = file.getName();
-    final newName = originalName.replaceAll(inReplace.text, with_.value);
-    final style = originalName == newName ? fileStyle : nextStyle;
+
     return Container(
-      color: index % 2 == 0 ? Colors.grey : Colors.green,
+      color: index % 2 == 0 ? Colors.grey[50] : Colors.green[50],
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: Row(
@@ -104,7 +103,11 @@ class BulkRenamePage extends StatelessWidget {
               ],
             )),
             Expanded(flex:5, child:
-              Obx(()=> Text(newName, style: style))),
+              Obx(() {
+                final newName = originalName.replaceAll(inReplace.text, with_.value);
+                final style = originalName == newName ? fileStyle : nextStyle;
+                return Text(newName, style: style);
+              })),
           ],
         ),
       ),
@@ -114,7 +117,7 @@ class BulkRenamePage extends StatelessWidget {
   // - - - - - - - - - trivial members - - - - - - - - -
   final hint = "folder path";
   final fileStyle = TextStyle(fontSize: 18, color: Colors.black);
-  final nextStyle = TextStyle(fontSize: 18, color: Colors.blue);
+  final nextStyle = TextStyle(fontSize: 18, color: Colors.blueAccent);
   final titleStyle = TextStyle(fontSize: 20, fontWeight: FontWeight.bold);
 
 }
