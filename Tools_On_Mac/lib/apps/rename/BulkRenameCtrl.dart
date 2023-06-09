@@ -25,7 +25,7 @@ class BulkRenameCtrl extends GetxController {
     final replaceTo = inWith.text;
     final replaceFrom = inReplace.text;
     for(final file in files_.value) {
-      final newName = file.getName().replaceAll(replaceFrom, replaceTo);
+      final newName = file.getName().replaceAll(RegExp(replaceFrom), replaceTo);
       file.renameSyncTo(newName);
     }
 
@@ -54,3 +54,7 @@ class BulkRenameCtrl extends GetxController {
   }
 
 }
+/*
+    final from = "Coroutines and Flows (Jomar Tigcal) s (my.org)";
+    final to = from.replaceAll(RegExp(r"\(.*?\)"), "123");
+ */

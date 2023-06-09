@@ -56,9 +56,6 @@ class BulkRenamePage extends StatelessWidget {
     );
   }
 
-
-
-
   _renderFileGrid(int index) {
     final ctrl = Get.find<BulkRenameCtrl>();
     final _files = ctrl.files_.value;
@@ -81,8 +78,7 @@ class BulkRenamePage extends StatelessWidget {
             )),
             Expanded(flex:5, child:
               Obx(() {
-                final isNotFullDone = ctrl.replace_.value.isEmpty || ctrl.with_.value.isEmpty;
-                final newName = isNotFullDone ? originalName : originalName.replaceAll(ctrl.replace_.value, ctrl.with_.value);
+                final newName = originalName.replaceAll(RegExp(ctrl.replace_.value), ctrl.with_.value);
                 final style = originalName == newName ? fileStyle : nextStyle;
                 return Text(newName, style: style);
               })),
